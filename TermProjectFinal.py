@@ -647,7 +647,7 @@ def initialRedPlayers():  # creates 3 red players at initial locations
                                    (redThreeX, redThreeY, hitTime)]
 
 
-def createRedPlayers((x, y, hitTime)):  # creates red players at given location
+def createRedPlayers(x, y, hitTime):  # creates red players at given location
     rStand = canvas.data.image["rstand"]
     rSelected = canvas.data.image["rselected"]
     rPlayerHit = canvas.data.image["rplayerhit"]
