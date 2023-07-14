@@ -195,7 +195,7 @@ def redrawAll():
         canvas.data.paused = True  # game is paused in between levels
         canvas.data.playerSelected[0] = False  # player is no longer selected
     for player in canvas.data.redPlayersList:
-        createRedPlayers(player)
+        createRedPlayers(player[0], player[1], player[2])
     for player in canvas.data.greenPlayersList:
         createGreenPlayers(player)
     if canvas.data.snowballThrown == True:
@@ -511,9 +511,9 @@ def initialGreenLevelOne():  # creates green initial green players for level one
     greenThreeY = greenOneX
     hitCount = 0
     hitTime = 0
-    canvas.data.greenPlayersList += [(greenOneX, greenOneY, hitCount, hitTime),
-                                     (greenTwoX, greenTwoY, hitCount, hitTime),
-                                     (greenThreeX, greenThreeY, hitCount, hitTime)]
+    canvas.data.greenPlayersList += [[greenOneX, greenOneY, hitCount, hitTime],
+                                     [greenTwoX, greenTwoY, hitCount, hitTime],
+                                     [greenThreeX, greenThreeY, hitCount, hitTime]]
     canvas.data.greenOrders = [0]*len(canvas.data.greenPlayersList)
     canvas.data.commands = ["Move", "Throw"]
     canvas.data.directions = ["Left", "Up", "Right", "Down"]
@@ -521,31 +521,41 @@ def initialGreenLevelOne():  # creates green initial green players for level one
         createGreenPlayers(player)
 
 
-def createGreenPlayers(x, y, hitCount, hitTime):  # creates green players
+def createGreenPlayers(player):  # creates green players x, y, hitCount, hitTime
     gStand = canvas.data.image["gstand"]  # at given location
     gHit, gThrow = canvas.data.image["ghit"], canvas.data.image["gthrow"]
     gBrushOne = canvas.data.image["gbrushOne"]
     gBrushTwo = canvas.data.image["gbrushTwo"]
     maxHitCount = canvas.data.maxHitCount
-    n = canvas.data.greenPlayersList.index((x, y, hitCount, hitTime))
+    n = canvas.data.greenPlayersList.index(player)  # (x, y, hitCount, hitTime)
+    hitCount = player[2]
+    hitTime = player[3]
     if hitCount == maxHitCount:  # player has been hit 3 times, player is dead
         dead = canvas.data.sound["dead"]  # add player to dead list
-        canvas.data.deadGreen += [(x, y)]  # remove from alive list
+        # remove from alive list (x, y)
+        canvas.data.deadGreen += [player[0], player[1]]
         canvas.data.greenPlayersList.remove(
-            (x, y, hitCount, hitTime)), dead.play()
+            player), dead.play()  # (x, y, hitCount, hitTime)
     elif hitTime > 0:  # player is hit
         if hitCount == 1:  # first time being hit,player brushes snow off face
             if hitTime > 50:
-                canvas.create_image(x, y, anchor=N, image=gBrushOne)
+                # canvas.create_image(x, y, anchor=N, image=gBrushOne)
+                canvas.create_image(
+                    player[0], player[1], anchor=N, image=gBrushOne)
             else:
-                canvas.create_image(x, y, anchor=N, image=gBrushTwo)
+                # canvas.create_image(x, y, anchor=N, image=gBrushTwo)
+                canvas.create_image(
+                    player[0], player[1], anchor=N, image=gBrushTwo)
         elif hitCount == 2:
-            canvas.create_image(x, y, anchor=N, image=gHit)
+            # canvas.create_image(x, y, anchor=N, image=gHit)
+            canvas.create_image(player[0], player[1], anchor=N, image=gHit)
     # player must wait until snowball lands
     elif canvas.data.greenOrders[n] == -1:
-        canvas.create_image(x, y, anchor=N, image=gThrow)
+        # canvas.create_image(x, y, anchor=N, image=gThrow)
+        canvas.create_image(player[0], player[1], anchor=N, image=gThrow)
     else:
-        canvas.create_image(x, y, anchor=N, image=gStand)
+        # canvas.create_image(x, y, anchor=N, image=gStand)
+        canvas.create_image(player[0], player[1], anchor=N, image=gStand)
 
 
 def initImages():  # stores the images in dictionary
@@ -611,7 +621,7 @@ def init():  # stores initial values
     if canvas.data.level == 2:
         initialRedPlayers(), initialGreenLevelOne(), initialGreenLevelTwo()
     for element in canvas.data.redPlayersList:
-        createRedPlayers(element)
+        createRedPlayers(element[0], element[1], element[2])
 
 
 def initialGreenLevelTwo():  # creates initial green players for level two
@@ -623,9 +633,9 @@ def initialGreenLevelTwo():  # creates initial green players for level two
     greenSixY = greenFourY+(8*canvas.data.playerRadius)
     hitCount = 0
     hitTime = 0
-    canvas.data.greenPlayersList += [(greenFourX, greenFourY, hitCount, hitTime),
-                                     (greenFiveX, greenFiveY, hitCount, hitTime),
-                                     (greenSixX, greenSixY, hitCount, hitTime)]
+    canvas.data.greenPlayersList += [[greenFourX, greenFourY, hitCount, hitTime]
+                                     [greenFiveX, greenFiveY, hitCount, hitTime],
+                                     [greenSixX, greenSixY, hitCount, hitTime]]
     canvas.data.greenOrders = [0]*len(canvas.data.greenPlayersList)
     for player in canvas.data.greenPlayersList:
         createGreenPlayers(player)
@@ -642,9 +652,9 @@ def initialRedPlayers():  # creates 3 red players at initial locations
     redTwoY = redOneY
     redThreeX = redOneX+(playerRadius*3)
     redThreeY = redOneY-(playerRadius*3)
-    canvas.data.redPlayersList += [(redOneX, redOneY, hitTime),
-                                   (redTwoX, redTwoY, hitTime),
-                                   (redThreeX, redThreeY, hitTime)]
+    canvas.data.redPlayersList += [[redOneX, redOneY, hitTime],
+                                   [redTwoX, redTwoY, hitTime],
+                                   [redThreeX, redThreeY, hitTime]]
 
 
 def createRedPlayers(x, y, hitTime):  # creates red players at given location
