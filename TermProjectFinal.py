@@ -550,15 +550,15 @@ def createGreenPlayers(x, y, hitCount, hitTime):  # creates green players
 
 def initImages():  # stores the images in dictionary
     canvas.data.image = {}
-    background = PhotoImage(file="snowcraft background.gif")
+    background = PhotoImage(file="snowcraftbackground.gif")
     rStand, gStand = PhotoImage(
         file="rstand.gif"), PhotoImage(file="gstand.gif")
     rDead, gThrow = PhotoImage(file="rdead.gif"), PhotoImage(file="gthrow.gif")
     rSelected = PhotoImage(file="rselected.gif")
     gDead, gHit = PhotoImage(file="gdead.gif"), PhotoImage(file="ghit.gif")
     rPlayerHit = PhotoImage(file="rplayerhit.gif")
-    gBrushOne = PhotoImage(file="gBrushOne.gif")
-    gBrushTwo = PhotoImage(file="gBrushTwo.gif")
+    gBrushOne = PhotoImage(file="gbrushOne.gif")
+    gBrushTwo = PhotoImage(file="gbrushTwo.gif")
     snowSplash = PhotoImage(file="snowsplash.gif")
     canvas.data.image["snowsplash"] = snowSplash
     canvas.data.image["background"] = background
