@@ -1,4 +1,5 @@
 ##### MUST BE RUN ON PYTHON 2 ####
+##### Update to  PYTHON 3.10.6 ####
 
 from tkinter import *  # andrew ID: hyunminp
 from pygame import mixer
