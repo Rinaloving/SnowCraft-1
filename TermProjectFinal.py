@@ -172,10 +172,12 @@ def drawBackGround():  # draws the background
     gDead = canvas.data.image["gdead"]
     playerRadius = canvas.data.playerRadius
     for player in canvas.data.deadRed:  # draw dead players as part of the
-        (x, y) = player  # background
+        x = player[0]
+        y = player[1]  # background
         canvas.create_image(x, y, anchor=N, image=rDead)
     for player in canvas.data.deadGreen:
-        (x, y) = player
+        x = player[0]
+        y = player[1]
         canvas.create_image(x-playerRadius, y-playerRadius,
                             anchor=N, image=gDead)
 ############
@@ -534,7 +536,7 @@ def createGreenPlayers(player):  # creates green players x, y, hitCount, hitTime
     if hitCount == maxHitCount:  # player has been hit 3 times, player is dead
         dead = canvas.data.sound["dead"]  # add player to dead list
         # remove from alive list (x, y)
-        canvas.data.deadGreen += [player[0], player[1]]
+        canvas.data.deadGreen += [(player[0], player[1])]
         canvas.data.greenPlayersList.remove(
             player), dead.play()  # (x, y, hitCount, hitTime)
     elif hitTime > 0:  # player is hit
