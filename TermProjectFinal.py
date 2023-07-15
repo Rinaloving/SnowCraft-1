@@ -134,7 +134,7 @@ def timerFired():
         checkGreen()
         checkRed()
     redrawAll()
-    delay = 5  # milliseconds
+    delay = 50  # milliseconds
     canvas.after(delay, timerFired)
 ############
 # Instructions
@@ -195,7 +195,7 @@ def redrawAll():
         canvas.data.paused = True  # game is paused in between levels
         canvas.data.playerSelected[0] = False  # player is no longer selected
     for player in canvas.data.redPlayersList:
-        createRedPlayers(player[0], player[1], player[2])
+        createRedPlayers(player)
     for player in canvas.data.greenPlayersList:
         createGreenPlayers(player)
     if canvas.data.snowballThrown == True:
@@ -291,7 +291,7 @@ def checkGreen():  # go through each player in list
         (x, y, hitCount, hitTime) = player
         n = canvas.data.greenPlayersList.index(player)
         if hitTime > 0:  # player is resting from hit
-            player = (x, y, hitCount, hitTime-1)
+            player = [x, y, hitCount, hitTime-1]
             canvas.data.greenPlayersList[n] = player
             if hitCount == 2:
                 continue  # if it is second hit, player is on ground
@@ -318,7 +318,7 @@ def checkGreenHit(player, x, y, hitCount):  # for specific green player check if
             del canvas.data.d[rSnow]  # snowball is gone
             canvas.data.redSnow.remove(rSnow), greenHit.play()
             n = canvas.data.greenPlayersList.index(player)
-            canvas.data.greenPlayersList[n] = (x, y, hitCount+1, addedHitTime)
+            canvas.data.greenPlayersList[n] = [x, y, hitCount+1, addedHitTime]
             # hit count goes up and hit time goes up
 
 
@@ -330,7 +330,7 @@ def checkRed():  # check if a red player has been hit
         n = canvas.data.redPlayersList.index(
             player)  # subtract one from hit time
         if hitTime > 0:
-            canvas.data.redPlayersList[n] = (x, y, hitTime-1)
+            canvas.data.redPlayersList[n] = [x, y, hitTime-1]
         for gSnow in canvas.data.greenSnow:  # check each snowball if it hit a
             (l, t, r, b, throwStrength) = canvas.data.d[gSnow]  # player
             if (l < 0) or (t < 0) or\
@@ -343,7 +343,7 @@ def checkRed():  # check if a red player has been hit
                 del canvas.data.d[gSnow]
                 canvas.data.greenSnow.remove(gSnow)  # snowball is gone
                 randomizeCommand(abs(gSnow)), redHit.play()  # hit time goes up
-                canvas.data.redPlayersList[n] = (x, y, hitTime+addedHitTime)
+                canvas.data.redPlayersList[n] = [x, y, hitTime+addedHitTime]
                 if [x, y] == canvas.data.playerSelected[1:3]:  # hit player cannot
                     canvas.data.playerSelected = [False, 0, 0]  # be selected
 
@@ -401,9 +401,10 @@ def leftMouseMoved(event):  # only if game is not paused and player is selected
                 xPlayer, yPlayer = 0, canvas.data.height
             if event.y < 0:
                 yPlayer, xPlayer = 0, canvas.data.width
-        n = canvas.data.redPlayersList.index((x, y, hitTime))
-        canvas.data.redPlayersList[n] = (
-            xPlayer, yPlayer, hitTime)  # store player at
+        n = canvas.data.redPlayersList.index(
+            [x, y, hitTime])  # (x, y, hitTime)
+        canvas.data.redPlayersList[n] = [
+            xPlayer, yPlayer, hitTime]  # store player at
         canvas.data.playerSelected = [truth, xPlayer, yPlayer]  # new location
 
 
@@ -621,7 +622,7 @@ def init():  # stores initial values
     if canvas.data.level == 2:
         initialRedPlayers(), initialGreenLevelOne(), initialGreenLevelTwo()
     for element in canvas.data.redPlayersList:
-        createRedPlayers(element[0], element[1], element[2])
+        createRedPlayers(element)
 
 
 def initialGreenLevelTwo():  # creates initial green players for level two
@@ -657,7 +658,10 @@ def initialRedPlayers():  # creates 3 red players at initial locations
                                    [redThreeX, redThreeY, hitTime]]
 
 
-def createRedPlayers(x, y, hitTime):  # creates red players at given location
+def createRedPlayers(player):  # creates red players at given location
+    x = player[0]
+    y = player[1]
+    hitTime = player[2]
     rStand = canvas.data.image["rstand"]
     rSelected = canvas.data.image["rselected"]
     rPlayerHit = canvas.data.image["rplayerhit"]
@@ -665,7 +669,8 @@ def createRedPlayers(x, y, hitTime):  # creates red players at given location
     playerRadius = canvas.data.playerRadius
     if hitTime > canvas.data.hitTime:  # the player was hit while stunned
         dead.play()
-        canvas.data.redPlayersList.remove((x, y, hitTime))  # player is dead
+        # player is dead (x, y, hitTime)
+        canvas.data.redPlayersList.remove(player)
         canvas.data.deadRed += [(x, y)]  # draw dead player on background
     elif hitTime > 0:  # the player was hit while not stunned
         canvas.create_image(x, y-playerRadius, anchor=N, image=rPlayerHit)
